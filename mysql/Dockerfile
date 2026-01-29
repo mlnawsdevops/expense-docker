@@ -1,10 +1,13 @@
 FROM mysql:8.0
+
+# Let the official entrypoint handle DB & user creation
 ENV MYSQL_ROOT_PASSWORD=ExpenseApp@1
-RUN groupadd expense && \
-    useradd -g expense expense && \
-    chown -R expense:expense /var/lib/mysql /var/run/mysqld /docker-entrypoint-initdb.d
+ENV MYSQL_DATABASE=transactions
+ENV MYSQL_USER=expense
+ENV MYSQL_PASSWORD=ExpenseApp@1
+
+# Add SQL scripts
 ADD scripts/*.sql /docker-entrypoint-initdb.d
-USER expense
-    # MYSQL_DATABASE=transactions \
-    # MYSQL_USER=expense \
-    # MYSQL_PASSWORD=ExpenseApp@1
+
+# Do NOT switch user, use default MySQL user
+# USER mysql
